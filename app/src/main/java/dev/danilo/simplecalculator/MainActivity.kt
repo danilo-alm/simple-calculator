@@ -352,8 +352,8 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     it.text = fitNumber(resultDouble.toString())
-
-                    if (operator == '/' && numbersAfterDecimal > 5) {
+                    warning.visibility = View.INVISIBLE
+                    if ( (operator == '/' && numbersAfterDecimal > 4) && (n1.contains('.') || n2.contains('.')) ) {
                         warning.text = floatingPointImprecisionWarning
                         warning.visibility = View.VISIBLE
                     }
