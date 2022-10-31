@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private val invalidBinary = "NOT A BINARY NUMBER!"
     private val floatingPointImprecisionWarning = "PRONE TO FLOATING POINT IMPRECISION!"
     private val cantConvertToBinaryWarning = "CAN'T CONVERT TO BINARY!"
-    private var maxAmountOfDigits = 16
+    private var maxAmountOfDigits = 15
     private var powersOfTwo = listOf(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768)
 
     // Flags
@@ -115,18 +115,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fitNumber(number: String): String {
-        if (number.length > 15) {
+        if (number.length > maxAmountOfDigits) {
             tvWarning?.let {
                 it.text = valueIsTooBig
                 it.visibility = View.VISIBLE
             }
-            return number.subSequence(0, 15).toString()
+            return number.subSequence(0, maxAmountOfDigits).toString()
         }
         return number
     }
 
     private fun numberFits(): Boolean {
-        if (tvRightBottom?.text?.length!! < 15) { return true }
+        if (tvRightBottom?.text?.length!! < maxAmountOfDigits) { return true }
         tvWarning?.let {
             it.text = valueIsTooBig
             it.visibility = View.VISIBLE
@@ -334,15 +334,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            tvPreviousEquation?.text = it.text.toString()
+            tvPreviousEquation?.text = fitNumber(it.text.toString())
             if (resultLong != null) { it.text = fitNumber(resultLong.toString()) }
             else if (resultDouble != null) {
                 tvWarning?.let { warning ->
                     val afterDecimal = resultDouble.toString().substringAfter('.')
                     var onlyZerosAfterDecimal = true
+                    var numbersAfterDecimal = 0
                     for (char in afterDecimal) {
                         if (char != '0') { onlyZerosAfterDecimal = false }
-                        break
+                        numbersAfterDecimal++
                     }
 
                     if (onlyZerosAfterDecimal) {
@@ -351,8 +352,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     it.text = fitNumber(resultDouble.toString())
-                    warning.text = floatingPointImprecisionWarning
-                    warning.visibility = View.VISIBLE
+
+                    if (operator == '/' && numbersAfterDecimal > 5) {
+                        warning.text = floatingPointImprecisionWarning
+                        warning.visibility = View.VISIBLE
+                    }
                 }
             }
         }
