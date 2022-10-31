@@ -281,7 +281,9 @@ class MainActivity : AppCompatActivity() {
         if (!hasOperator()) { return }
         tvRightBottom?.let {
             val myList = mutableListOf<String>()
+            var firstNumberIsNegative = false
             val myText = removeLeadingMinusIfAny(it.text.toString())
+            if (myText != it.text.toString()) { firstNumberIsNegative = true }
             var operator = ' '
             for (op in operators) {
                 if (myText.contains(op))  {
@@ -291,10 +293,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             if (myList.size < 2 || myList.last().isEmpty()) { return }
-            val n1 = myList[0]
+            var n1 = myList[0]
             val n2 = myList[1]
             var resultLong: Long? = null
             var resultDouble: Double? = null
+
+            if (firstNumberIsNegative) { n1 = "-$n1" }
 
             when (operator) {
                 '+' -> {
@@ -340,7 +344,7 @@ class MainActivity : AppCompatActivity() {
                         if (char != '0') { onlyZerosAfterDecimal = false }
                         break
                     }
-                    
+
                     if (onlyZerosAfterDecimal) {
                         it.text = resultDouble.toString().substringBefore('.')
                         return
