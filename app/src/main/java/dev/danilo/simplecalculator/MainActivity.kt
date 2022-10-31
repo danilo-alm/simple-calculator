@@ -181,6 +181,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun toBinary() {
         tvRightBottom?.let {
+            if (!it.text.any()) { return }
             tvWarning?.visibility = View.INVISIBLE
             it.text.forEach { char ->
                 if (!char.isDigit()) {
@@ -283,7 +284,7 @@ class MainActivity : AppCompatActivity() {
             val myText = removeLeadingMinusIfAny(it.text.toString())
             var operator = ' '
             for (op in operators) {
-                if (myText.contains(op)) {
+                if (myText.contains(op))  {
                     myList.addAll(myText.split(op))
                     operator = op
                     break
@@ -315,6 +316,7 @@ class MainActivity : AppCompatActivity() {
                     else if (!n1.contains('.') && n2.contains('.')) { resultDouble = n1.toLong() * n2.toDouble() }
                 }
                 '/' -> {
+                    if (n2.toDouble() == 0.0) { return }
                     if (n1.contains('.') && n2.contains('.')) { resultDouble = n1.toDouble() / n2.toDouble() }
                     else if (!n1.contains('.') && !n2.contains('.')) {
                         resultDouble = if (n1.length > n2.length) {
@@ -338,7 +340,7 @@ class MainActivity : AppCompatActivity() {
                         if (char != '0') { onlyZerosAfterDecimal = false }
                         break
                     }
-
+                    
                     if (onlyZerosAfterDecimal) {
                         it.text = resultDouble.toString().substringBefore('.')
                         return
